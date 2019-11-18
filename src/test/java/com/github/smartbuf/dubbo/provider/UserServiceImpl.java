@@ -1,8 +1,11 @@
 package com.github.smartbuf.dubbo.provider;
 
-import com.github.smartbuf.dubbo.model.UserModel;
 import com.github.smartbuf.dubbo.UserService;
+import com.github.smartbuf.dubbo.model.UserModel;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,16 +15,37 @@ import java.util.UUID;
  */
 public class UserServiceImpl implements UserService {
 
+    private UserModel       user;
+    private List<UserModel> friends = new ArrayList<>();
+
+    public UserServiceImpl() {
+        for (int i = 0; i < 20; i++) {
+            UserModel user = new UserModel();
+            user.setId(RandomUtils.nextInt(10000, 99999));
+            user.setNickname(RandomStringUtils.randomAlphanumeric(10));
+            user.setLoginIp("127.0.0.1");
+            user.setLoginTime(10);
+            user.setCreateTime(System.currentTimeMillis());
+            user.setUpdateTime(System.currentTimeMillis());
+            user.setToken(UUID.randomUUID().toString());
+            if (i == 0) {
+                this.user = user;
+            } else {
+                this.friends.add(user);
+            }
+        }
+    }
+
     public String login(String username, String password) {
-        return UUID.randomUUID().toString();
+        return user.getToken();
     }
 
     public UserModel getUser(int userId) {
-        return null;
+        return user;
     }
 
     public List<UserModel> getFriends(int userId) {
-        return null;
+        return friends;
     }
 
 }

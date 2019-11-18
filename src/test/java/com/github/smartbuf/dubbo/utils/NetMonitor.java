@@ -1,5 +1,6 @@
 package com.github.smartbuf.dubbo.utils;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -55,8 +56,8 @@ public class NetMonitor {
     /**
      * Call nettop to update bytes_in and bytes_out
      */
-    private void updateNetStatistics() throws Exception {
-        ProcessBuilder ps = new ProcessBuilder("nettop", "-l1", "-p " + pid);
+    private void updateNetStatistics() {
+        ProcessBuilder ps = new ProcessBuilder("nettop", "-l1", "-x", "-p " + pid);
         ps.redirectErrorStream(true);
         Process process = null;
         try {
@@ -72,7 +73,7 @@ public class NetMonitor {
                 }
                 String[] parts = line.split(" +");
                 bytesIn = Long.parseLong(parts[2]);
-                bytesOut = Long.parseLong(parts[4]);
+                bytesOut = Long.parseLong(parts[3]);
             }
             process.waitFor();
             reader.close();
