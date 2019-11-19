@@ -1,5 +1,7 @@
 # smartbuf-dubbo
 
+*NOTICE: if you need EN version of this documentation, tell me please*
+
 `smartbuf-dubbo`是一个基于`smartbuf`的`dubbo`序列化插件。
 
 它内部封装了[`smartbuf`](https://github.com/smartbuf/smartbuf-java)序列化框架的`stream`模式，
