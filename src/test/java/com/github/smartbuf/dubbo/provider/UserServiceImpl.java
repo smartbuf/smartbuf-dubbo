@@ -1,6 +1,8 @@
 package com.github.smartbuf.dubbo.provider;
 
 import com.github.smartbuf.dubbo.UserService;
+import com.github.smartbuf.dubbo.model.PostModel;
+import com.github.smartbuf.dubbo.model.TopicModel;
 import com.github.smartbuf.dubbo.model.UserModel;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -16,7 +18,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private UserModel       user;
-    private List<UserModel> friends = new ArrayList<>();
+    private List<PostModel> posts = new ArrayList<>();
 
     public UserServiceImpl() {
         for (int i = 0; i < 20; i++) {
@@ -31,8 +33,16 @@ public class UserServiceImpl implements UserService {
             if (i == 0) {
                 this.user = user;
             } else {
-                this.friends.add(user);
+                this.user.getFriends().add(user);
             }
+        }
+
+        for (int i = 0; i < 100; i++) {
+            PostModel post = PostModel.random();
+            for (int j = 0; j < 5; j++) {
+                post.getTopics().add(TopicModel.getFromPool());
+            }
+            posts.add(post);
         }
     }
 
@@ -40,12 +50,13 @@ public class UserServiceImpl implements UserService {
         return user.getToken();
     }
 
-    public UserModel getUser(int userId) {
+    public UserModel getUser(Integer userId) {
         return user;
     }
 
-    public List<UserModel> getFriends(int userId) {
-        return friends;
+    @Override
+    public List<PostModel> queryPost(String keyword) {
+        return posts;
     }
 
 }

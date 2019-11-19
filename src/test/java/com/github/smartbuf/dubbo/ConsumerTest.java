@@ -1,57 +1,41 @@
 package com.github.smartbuf.dubbo;
 
-import com.alibaba.dubbo.config.*;
-import com.github.smartbuf.dubbo.provider.UserServiceImpl;
+import com.alibaba.dubbo.config.ApplicationConfig;
+import com.alibaba.dubbo.config.ReferenceConfig;
+import com.alibaba.dubbo.config.RegistryConfig;
 import com.github.smartbuf.dubbo.utils.NetMonitor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * @author sulin
  * @since 2019-11-17 16:17:12
  */
 @Slf4j
-public class UserServiceTest {
+public class ConsumerTest {
 
     private static final RegistryConfig registry = new RegistryConfig("localhost:2181", "zookeeper");
 
-    private static final String serialization = "kryo";
-    private static final int    times         = 1000 * 1000;
-
     @Test
-    public void testProvider() {
-        UserServiceImpl userService = new UserServiceImpl();
-
-        ApplicationConfig application = new ApplicationConfig();
-        application.setLogger("slf4j");
-        application.setName("provider");
-        application.setQosPort(RandomUtils.nextInt(20000, 30000));
-
-        ProtocolConfig protocol = new ProtocolConfig();
-        protocol.setName("dubbo");
-        protocol.setPort(12345);
-        protocol.setThreads(40);
-        protocol.setSerialization(serialization);
-
-        ServiceConfig<UserService> service = new ServiceConfig<>();
-        service.setApplication(application);
-        service.setRegistry(registry);
-        service.setProtocol(protocol);
-        service.setInterface(UserService.class);
-        service.setRef(userService);
-        service.setVersion("1.0.0");
-        service.setSerialization(serialization);
-
-        service.export();
-
-        sleep(10000);
+    public void testTiny() {
+        runConsumer(400000, userService -> userService.login("smartbuf", "it's the fastest"));
     }
 
     @Test
-    public void testConsumer() {
+    public void testUser() {
+        runConsumer(300000, userService -> userService.getUser(null));
+    }
+
+    @Test
+    public void testPosts() {
+        runConsumer(100000, userService -> userService.queryPost("hollywood"));
+    }
+
+    public void runConsumer(int times, Consumer<UserService> run) {
         ApplicationConfig application = new ApplicationConfig();
         application.setLogger("slf4j");
         application.setName("consumer");
@@ -75,9 +59,7 @@ public class UserServiceTest {
         new Thread(() -> {
             for (int i = 0; i < times; i++) {
                 try {
-                    userService.login("nike", "test.123");
-                    userService.getUser(10001);
-                    userService.getFriends(10001);
+                    run.accept(userService);
                 } catch (Exception e) {
                     log.error("wtf! ", e);
                     sleep(1);

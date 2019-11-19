@@ -1,5 +1,6 @@
 package com.github.smartbuf.dubbo;
 
+import com.github.smartbuf.dubbo.model.PostModel;
 import com.github.smartbuf.dubbo.model.UserModel;
 
 import java.util.List;
@@ -12,8 +13,8 @@ public interface UserService {
 
     String login(String username, String password);
 
-    UserModel getUser(int userId);
+    UserModel getUser(Integer userId);
 
-    List<UserModel> getFriends(int userId);
+    List<PostModel> queryPost(String keyword);
 
 }
