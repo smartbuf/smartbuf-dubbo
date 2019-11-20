@@ -1,4 +1,4 @@
-# smartbuf-dubbo
+# smartbuf-dubbo [![Travis CI](https://travis-ci.org/smartbuf/smartbuf-dubbo.svg?branch=master)](https://travis-ci.org/smartbuf/smartbuf-dubbo)
 
 *NOTICE: if you need EN version of this documentation, tell me please*
 
