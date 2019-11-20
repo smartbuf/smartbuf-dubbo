@@ -1,4 +1,4 @@
 language: java
 sudo: false # faster builds
 install: true
-script: mvn clean compile
+script: mvn clean compile -DskipTests
